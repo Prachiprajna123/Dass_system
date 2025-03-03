@@ -630,4 +630,4 @@ def download_pdf(user_id):
     except Exception as e:
         return jsonify({"success": False, "error": f"An error occurred: {str(e)}"}), 500
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.getenv("DEBUG",False)=="True")
