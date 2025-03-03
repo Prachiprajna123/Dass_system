@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Account</title>
+    <style>
+        body {
+            background: url("static/background.jpg") no-repeat center center fixed; /* Replace with your own image URL */
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Glass prism effect container */
+        .form-container {
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent background for glass effect */
+            border-radius: 15px;
+            padding: 70px;
+            backdrop-filter: blur(10px); /* The glass effect */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Light border for a more defined glass effect */
+            width: 200%;
+            max-width: 450px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .form-group input {
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent input background */
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-group input:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: rgba(0, 123, 255, 0.8); /* Semi-transparent button background */
+            border-color: rgba(0, 123, 255, 0.8);
+            font-size: 1.1rem;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: rgba(0, 86, 179, 0.9); /* Darker on hover */
+            border-color: rgba(0, 86, 179, 0.9);
+        }
+
+        .btn-block {
+            font-size: 1.2rem;
+        }
+    </style>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        
+        <div class="row justify-content-center">
+            <div class="form-container">
+                <!-- Login form -->
+                 <h1 class="text-center">Login Account</h1>
+                 <br>
+                <form id="login-form">
+                    <div class="form-group">
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Handle form login
+        async function loginUser(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('login-form');
+            const formData = new FormData(form);
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Login successful!');
+                window.location.href = '/success';
+            } else {
+                alert(`Login failed: ${result.error}`);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', loginUser);
+            }
+        });
+    </script>
+</body>
+</html>

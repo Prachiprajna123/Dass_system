@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for enhanced visual effects */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #343a40; /* Dark background for navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: bold;
+        }
+
+        .navbar .btn {
+            margin: 0 5px;
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
+
+        .navbar .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .navbar .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .navbar .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .navbar .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table img {
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="btn btn-danger" href="{{ url_for('admin_logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <h1 class="text-center">Admin Panel</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Contact</th>
+                    <th>Photo</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user['Ename'] }}</td>
+                    <td>{{ user['age'] }}</td>
+                    <td>{{ user['email'] }}</td>
+                    <td>{{ user['gender'] }}</td>
+                    <td>{{ user['contact'] }}</td>
+                    <td><img src="{{ user['photo_url'] }}" alt="User Photo" width="100"></td>
+                    <td>
+                        <a href="{{ url_for('admin_success', user_id=user['_id']) }}" class="btn btn-info">View</a>
+                        <a href="{{ url_for('edit_user', user_id=user['_id']) }}" class="btn btn-warning">Edit</a>
+                        <form action="{{ url_for('delete_user', user_id=user['_id']) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        <a href="/download_pdf/{{ user._id }}" class="btn btn-secondary">Download PDF</a>
+                        <form action="{{ url_for('send_email', user_id=user['_id']) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-info">send mail</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Response</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+        .response-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .response-table th, .response-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .response-table th {
+            background-color: #f2f2f2;
+        }
+        .response-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .response-table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Response</h1>
+    <div class="user-info">
+        <p><strong>Name:</strong> {{ user.Ename }}</p>
+        <p><strong>Age:</strong> {{ user.age }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Gender:</strong> {{ user.gender }}</p>
+        <p><strong>Contact:</strong> {{ user.contact }}</p>
+    </div>
+
+    <h2>Responses</h2>
+    <table class="response-table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question, response in user.responses.items() %}
+            <tr>
+                <td>{{ question }}</td>
+                <td>{{ response }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

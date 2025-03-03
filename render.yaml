@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: flask-dass-system
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://prachipradhan:RYqPLl27snQiDYdA@cluster0.x96gc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: EMAIL_ADDRESS
+        value: prajnashreepradhan21@gmail.com
+      - key: EMAIL_PASSWORD
+        value: jzvi odfc jgou hbvl
+      - key: SECRET_KEY
+        value: your_secret_key
