@@ -649,9 +649,6 @@ def chatbot_interaction():
         if not user_input:
             return jsonify({"error": "No message provided"}), 400
 
-        # Predefined responses for application-related queries
-       
-            # Use Google Gemini for general queries
             try:
                 chatbot_response = response.text
 
