@@ -629,5 +629,43 @@ def download_pdf(user_id):
 
     except Exception as e:
         return jsonify({"success": False, "error": f"An error occurred: {str(e)}"}), 500
+
+google_api_key = os.getenv("GOOGLE_API_KEY")
+import google.generativeai as genai
+genai.configure(api_key=google_api_key)
+
+# List all available models (for debugging)
+models = genai.list_models()
+
+
+# Initialize the Gemini model
+model = genai.GenerativeModel('gemini-1.5-pro')  # Use the correct model name
+
+# Chatbot route
+@app.route("/chatbot", methods=["GET", "POST"])
+def chatbot_interaction():
+    if request.method == "POST":
+        user_input = request.json.get("message")
+        if not user_input:
+            return jsonify({"error": "No message provided"}), 400
+
+        # Predefined responses for application-related queries
+       
+            # Use Google Gemini for general queries
+            try:
+                chatbot_response = response.text
+
+                # If the response indicates the question is unrelated, provide a polite message
+                if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
+                    chatbot_response = "I'm here to help with job applications, resumes, and career advice. If you have questions outside these topics, please contact support or visit our help center."
+
+            except Exception as e:
+                print(f"Error calling Google Gemini API: {e}")
+                chatbot_response = "Sorry, I'm unable to process your request at the moment. Please try again later."
+
+        return jsonify({"response": chatbot_response})
+
+    return render_template("chatbot.html")
+
 if __name__ == "__main__":
     app.run(debug=os.getenv("DEBUG",False)=="True")
