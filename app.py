@@ -650,13 +650,10 @@ def chatbot_interaction():
             return jsonify({"error": "No message provided"}), 400
 
             try:
-               response = model.generate_content(
-                    f"You are a helpful assistant that provides information about job applications, resumes, and career advice. If the question is unrelated to these topics, politely inform the user. User: {user_input}"
-                )
-                chatbot_response = response.text
+               response = model.generate_content(f"You are a helpful assistant that provides information about job applications, resumes, and career advice. If the question is unrelated to these topics, politely inform the user. User: {user_input}")
+               chatbot_response = response.text
 
-                # If the response indicates the question is unrelated, provide a polite message
-                if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
+               if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
                     chatbot_response = "I'm here to help with job applications, resumes, and career advice. If you have questions outside these topics, please contact support or visit our help center."
 
             except Exception as e:
