@@ -649,20 +649,19 @@ def chatbot_interaction():
         if not user_input:
             return jsonify({"error": "No message provided"}), 400
 
-            try:
-               response = model.generate_content(f"You are a helpful assistant that provides information about job applications, resumes, and career advice. If the question is unrelated to these topics, politely inform the user. User: {user_input}")
-               chatbot_response = response.text
+        try:
+            response = model.generate_content(f"You are a helpful assistant that provides information about job applications, resumes, and career advice. If the question is unrelated to these topics, politely inform the user. User: {user_input}")
+            chatbot_response = response.text
 
-               if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
-                    chatbot_response = "I'm here to help with job applications, resumes, and career advice. If you have questions outside these topics, please contact support or visit our help center."
+            if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
+                chatbot_response = "I'm here to help with job applications, resumes, and career advice. If you have questions outside these topics, please contact support or visit our help center."
 
-            except Exception as e:
-                print(f"Error calling Google Gemini API: {e}")
-                chatbot_response = "Sorry, I'm unable to process your request at the moment. Please try again later."
+        except Exception as e:
+            print(f"Error calling Google Gemini API: {e}")
+            chatbot_response = "Sorry, I'm unable to process your request at the moment. Please try again later."
 
         return jsonify({"response": chatbot_response})
 
     return render_template("chatbot.html")
-
 if __name__ == "__main__":
     app.run(debug=os.getenv("DEBUG",False)=="True")
