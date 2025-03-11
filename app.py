@@ -630,38 +630,81 @@ def download_pdf(user_id):
     except Exception as e:
         return jsonify({"success": False, "error": f"An error occurred: {str(e)}"}), 500
 
-google_api_key = os.getenv("GOOGLE_API_KEY")
+
 import google.generativeai as genai
-genai.configure(api_key=google_api_key)
 
-# List all available models (for debugging)
-models = genai.list_models()
+genai.configure(api_key="AIzaSyA7pe3r3W5Ythm5s353-UYcWeDLp72D3jg")
+
+model = genai.GenerativeModel('gemini-1.5-pro')
+
+dass_questions = [
+    "I found myself getting upset by quite trivial things",
+    "I was aware of dryness of my mouth",
+    "I couldn't seem to experience any positive feeling at all",
+    "I experienced breathing difficulty (e.g., excessively rapid breathing, breathlessness in the absence of physical exertion)",
+    "I just couldn't seem to get going",
+    "I tended to over-react to situations",
+    "I had a feeling of shakiness (e.g., legs going to give way)",
+    "I found it difficult to relax",
+    "I found myself in situations that made me so anxious I was most relieved when they ended",
+    "I felt that I had nothing to look forward to",
+    "I found myself getting upset rather easily",
+    "I felt that I was using a lot of nervous energy",
+    "I felt sad and depressed",
+    "I found myself getting impatient when I was delayed in any way (e.g., lifts, traffic lights, being kept waiting)",
+    "I had a feeling of faintness",
+    "I felt that I had lost interest in just about everything",
+    "I felt I wasn't worth much as a person",
+    "I felt that I was rather touchy",
+    "I perspired noticeably (e.g., hands sweaty) in the absence of high temperatures or physical exertion",
+    "I felt scared without any good reason",
+    "I felt that life wasn't worthwhile",
+    "I found it hard to wind down",
+    "I had difficulty in swallowing",
+    "I couldn't seem to get any enjoyment out of the things I did",
+    "I was aware of the action of my heart in the absence of physical exertion (e.g., sense of heart rate increase, heart missing a beat)",
+    "I felt down-hearted and blue",
+    "I found that I was very irritable",
+    "I felt I was close to panic",
+    "I found it hard to calm down after something upset me",
+    "I feared that I would be 'thrown' by some trivial but unfamiliar task",
+    "I was unable to become enthusiastic about anything",
+    "I found it difficult to tolerate interruptions to what I was doing",
+    "I was in a state of nervous tension",
+    "I felt I was pretty worthless",
+    "I was intolerant of anything that kept me from getting on with what I was doing",
+    "I felt terrified",
+    "I could see nothing in the future to be hopeful about",
+    "I felt that life was meaningless",
+    "I found myself getting agitated",
+    "I was worried about situations in which I might panic and make a fool of myself",
+    "I experienced trembling (e.g., in the hands)",
+    "I found it difficult to work up the initiative to do things"
+]
+
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    data = request.json
+    user_message = data.get("message", "").strip()
+
+    # Check if the message is related to DASS-42
+    if user_message in dass_questions:
+        prompt = f"Given the statement: '{user_message}', please evaluate the level of distress on a scale of 0, 1, 2, or 3. \
+                   Provide a short explanation if needed."
+    else:
+        prompt = user_message  # Normal chatbot response
+
+    # Get response from Gemini AI
+    response = model.generate_content(prompt)
+    bot_response = response.text if response else "Sorry, I couldn't generate a response."
+
+    return jsonify({"success": True, "response": bot_response})
 
 
-# Initialize the Gemini model
-model = genai.GenerativeModel('gemini-1.5-pro')  # Use the correct model name
-
-# Chatbot route
-@app.route("/chatbot", methods=["GET", "POST"])
-def chatbot_interaction():
-    if request.method == "POST":
-        user_input = request.json.get("message")
-        if not user_input:
-            return jsonify({"error": "No message provided"}), 400
-
-        try:
-            response = model.generate_content(f"You are a helpful assistant that provides information about job applications, resumes, and career advice. If the question is unrelated to these topics, politely inform the user. User: {user_input}")
-            chatbot_response = response.text
-
-            if "unrelated" in chatbot_response.lower() or "not sure" in chatbot_response.lower():
-                chatbot_response = "I'm here to help with job applications, resumes, and career advice. If you have questions outside these topics, please contact support or visit our help center."
-
-        except Exception as e:
-            print(f"Error calling Google Gemini API: {e}")
-            chatbot_response = "Sorry, I'm unable to process your request at the moment. Please try again later."
-
-        return jsonify({"response": chatbot_response})
-
+@app.route("/chatbot", methods=["GET"])
+def user_chatbot():
     return render_template("chatbot.html")
+
+
 if __name__ == "__main__":
     app.run(debug=os.getenv("DEBUG",False)=="True")
