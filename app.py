@@ -632,8 +632,9 @@ def download_pdf(user_id):
 
 
 import google.generativeai as genai
-
-genai.configure(api_key="AIzaSyA7pe3r3W5Ythm5s353-UYcWeDLp72D3jg")
+load_dotenv()
+google_api_key = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=google_api_key)
 
 model = genai.GenerativeModel('gemini-1.5-pro')
 
