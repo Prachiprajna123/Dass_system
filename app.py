@@ -636,7 +636,7 @@ load_dotenv()
 google_api_key = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=google_api_key)
 
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 dass_questions = [
     "I found myself getting upset by quite trivial things",
