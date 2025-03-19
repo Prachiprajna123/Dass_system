@@ -28,10 +28,6 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client['dass_system']  # Main database
-db = client['dass_system']
-  # Main database
-
-# Collections
 users_collection = db['users']
 admins_collection = db['admins']
 survey_pdfs_collection = db['survey_pdfs']
@@ -130,6 +126,7 @@ def submit():
         gender = request.form.get('gender', '')
         contact = request.form.get('contact', '')
         email = request.form.get('email', '')
+        username = session['username']
 
         # Create DataFrame
         df = pd.DataFrame(data, index=[0])
@@ -197,7 +194,7 @@ def submit():
         
 
         # Insert into the survey_responses collection
-        users_collection.update_one({"Ename":name},{"$set":{"responses": responses_readable,"timestamp": datetime.now()}})
+        users_collection.update_one({"Ename":username},{"$set":{"responses": responses_readable,"timestamp": datetime.now()}})
 
         # Plot the survey results (same as before)
         temp_image_paths = []
@@ -306,7 +303,7 @@ Small changes in symptoms over time may be significant."""
             "pdf_file": pdf_binary,
             "timestamp": datetime.now()
         }
-        users_collection.update_one({ "Ename": name},{"$push": {"pdf_data":pdf_data}})
+        users_collection.update_one({ "Ename": username},{"$push": {"pdf_data":pdf_data}})
 
         
         response_buf = BytesIO()
@@ -547,8 +544,8 @@ def edit_user(user_id):
 @app.route("/view_response")
 def view_response():
     user_name = session.get("username")
-    print("user_name")
-    user = users_collection.find_one({"Ename": user_name})  # Use find_one to get a single document
+    user = users_collection.find_one({"Ename": user_name}) 
+    print(user) # Use find_one to get a single document
 
     if user is None:
         return "User not found. Please check your session or database.", 404
